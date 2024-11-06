@@ -1,5 +1,11 @@
 # NUShell aliases
 
+## Prerequisites
+
+These scripts require some things from [awesome-nu](https://github.com/nushell/awesome-nu).
+
+Specifically run `install-plugins.sh`
+
 ## Usage
 
 Edit using `config nu` and add something like:
