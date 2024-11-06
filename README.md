@@ -14,7 +14,7 @@ Edit using `config nu` and add something like:
 # NOTE: cannot use $env.HOME as it is not a compile time constant
 #
 # see https://www.nushell.sh/book/how_nushell_code_gets_run.html#parse-time-evaluation
-const myconfig_path = ("/home/andrei" | path join "devel" "nushell-config")
+const myconfig_path = ([$nu.home-path "devel" "nushell-config"] | path join)
 
 source $"($myconfig_path)/aliases.nu"
 source $"($myconfig_path)/helpers.nu"
