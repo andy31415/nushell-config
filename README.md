@@ -20,4 +20,5 @@ source $"($myconfig_path)/aliases.nu"
 source $"($myconfig_path)/helpers.nu"
 source $"($myconfig_path)/keybindings.nu"
 
+source ~/.cache/starship/init.nu
 ```

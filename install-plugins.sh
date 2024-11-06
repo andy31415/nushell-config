@@ -1,5 +1,13 @@
 #!/usr/bin/env nu
 
+echo "Set up starship config for nu"
+
+if not ('~/.cache/starship' | path exists ) { 
+  mkdir ~/.cache/starship
+  starship init nu | save -f ~/.cache/starship/init.nu
+}
+
+
 echo "Installing SKIM plugin..."
 cargo install nu_plugin_skim
 plugin add ~/.cargo/bin/nu_plugin_skim
