@@ -62,6 +62,6 @@ use $"($nu_scripts_path)/modules/background_task/task.nu"
 use $"($nu_scripts_path)/modules/jc"
 
 # Available "sockets" call
-def sockets [...rest] { nu $"($nu_scripts_path)/modules/network/sockets/sockets.nu" ...rest }
+use $"($nu_scripts_path)/modules/network/sockets/sockets.nu"
 
 ```
