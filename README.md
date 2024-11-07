@@ -35,22 +35,24 @@ From [nu_scripts](https://github.com/nushell/nu_scripts):
 
 ```nu
 
+const nu_scripts_path = ([$nu.home-path "devel" "nu_scripts"] | path join)
+
 # Custom completions
-source ~/devel/nu_scripts/custom-completions/bat/bat-completions.nu
-source ~/devel/nu_scripts/custom-completions/cargo/cargo-completions.nu
-source ~/devel/nu_scripts/custom-completions/docker/docker-completions.nu
-source ~/devel/nu_scripts/custom-completions/git/git-completions.nu
-source ~/devel/nu_scripts/custom-completions/just/just-completions.nu
-source ~/devel/nu_scripts/custom-completions/make/make-completions.nu
-source ~/devel/nu_scripts/custom-completions/npm/npm-completions.nu
-source ~/devel/nu_scripts/custom-completions/pytest/pytest-completions.nu
-source ~/devel/nu_scripts/custom-completions/rustup/rustup-completions.nu
-source ~/devel/nu_scripts/custom-completions/ssh/ssh-completions.nu
-source ~/devel/nu_scripts/custom-completions/tar/tar-completions.nu
-source ~/devel/nu_scripts/custom-completions/virsh/virsh-completions.nu
+source $"($nu_scripts_path)/custom-completions/bat/bat-completions.nu"
+source $"($nu_scripts_path)/custom-completions/cargo/cargo-completions.nu"
+source $"($nu_scripts_path)/custom-completions/docker/docker-completions.nu"
+source $"($nu_scripts_path)/custom-completions/git/git-completions.nu"
+source $"($nu_scripts_path)/custom-completions/just/just-completions.nu"
+source $"($nu_scripts_path)/custom-completions/make/make-completions.nu"
+source $"($nu_scripts_path)/custom-completions/npm/npm-completions.nu"
+source $"($nu_scripts_path)/custom-completions/pytest/pytest-completions.nu"
+source $"($nu_scripts_path)/custom-completions/rustup/rustup-completions.nu"
+source $"($nu_scripts_path)/custom-completions/ssh/ssh-completions.nu"
+source $"($nu_scripts_path)/custom-completions/tar/tar-completions.nu"
+source $"($nu_scripts_path)/custom-completions/virsh/virsh-completions.nu"
 
 # backtround tasks: "task spawn"
-use ~/devel/nu_scripts/modules/background_task/task.nu
+use $"($nu_scripts_path)/modules/background_task/task.nu"
 ```
 
 ```
