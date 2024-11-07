@@ -32,6 +32,9 @@ I use the following as well (install-plugins also installs these):
 - Using [starship](https://starship.rs/). Generally `cargo install starship`
 - Using [just](https://github.com/casey/just). Generally `cargo install just`
 
+Should install [jc](https://kellyjonbrazil.github.io/jc/#installation) manually, like `apt-get install jc`.
+This way we can convert outputs of commands.
+
 From [nu_scripts](https://github.com/nushell/nu_scripts):
 
 ```nu
@@ -54,4 +57,11 @@ source $"($nu_scripts_path)/custom-completions/virsh/virsh-completions.nu"
 
 # backtround tasks: "task spawn"
 use $"($nu_scripts_path)/modules/background_task/task.nu"
+
+# JC support
+use $"($nu_scripts_path)/modules/jc"
+
+# Available "sockets" call
+def sockets [...rest] { nu $"($nu_scripts_path)/modules/network/sockets/sockets.nu" ...rest }
+
 ```
