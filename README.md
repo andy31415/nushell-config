@@ -22,3 +22,37 @@ source $"($myconfig_path)/keybindings.nu"
 
 source ~/.cache/starship/init.nu
 ```
+
+## Other recommended items
+
+I use the following as well:
+
+Use [pueue](https://github.com/Nukesor/pueue) to have background tasks (tasks below will also use it). Generally `cargo install pueue` and then `pueued -d`
+
+Using [starship](https://starship.rs/). Generally `cargo install starship`
+
+From [nu_scripts](https://github.com/nushell/nu_scripts):
+
+```nu
+
+# Custom completions
+source ~/devel/nu_scripts/custom-completions/bat/bat-completions.nu
+source ~/devel/nu_scripts/custom-completions/cargo/cargo-completions.nu
+source ~/devel/nu_scripts/custom-completions/docker/docker-completions.nu
+source ~/devel/nu_scripts/custom-completions/git/git-completions.nu
+source ~/devel/nu_scripts/custom-completions/just/just-completions.nu
+source ~/devel/nu_scripts/custom-completions/make/make-completions.nu
+source ~/devel/nu_scripts/custom-completions/npm/npm-completions.nu
+source ~/devel/nu_scripts/custom-completions/pytest/pytest-completions.nu
+source ~/devel/nu_scripts/custom-completions/rustup/rustup-completions.nu
+source ~/devel/nu_scripts/custom-completions/ssh/ssh-completions.nu
+source ~/devel/nu_scripts/custom-completions/tar/tar-completions.nu
+source ~/devel/nu_scripts/custom-completions/virsh/virsh-completions.nu
+
+# backtround tasks: "task spawn"
+use ~/devel/nu_scripts/modules/background_task/task.nu
+```
+
+```
+
+```

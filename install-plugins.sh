@@ -20,3 +20,6 @@ plugin add ~/.cargo/bin/nu_plugin_clipboard
 # echo "Installing compress plugin"
 # cargo install nu_plugin_compress
 # plugin add ~/.cargo/bin/nu_plugin_compress
+#
+echo "Installing pueue for background tasks"
+cargo install pueue
