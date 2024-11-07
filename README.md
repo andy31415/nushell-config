@@ -64,4 +64,7 @@ use $"($nu_scripts_path)/modules/jc"
 # Available "sockets" call
 use $"($nu_scripts_path)/modules/network/sockets/sockets.nu"
 
+# Theme that seems ok
+source $"($nu_scripts_path)/themes/nu-themes/harper.nu"
+
 ```
