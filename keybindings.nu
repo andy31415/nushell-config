@@ -31,4 +31,21 @@ $env.config.keybindings ++= [
       { send: Enter }
     ]
   }
+  # Some extra keybindings from awesome-nu
+  {
+    name: fuzzy_history
+    modifier: control
+    keycode: char_h
+    mode: [emacs, vi_normal, vi_insert]
+    event: {
+        send: executehostcommand
+        cmd: "
+            history
+            | each { |it| $it.command }
+            | uniq
+            | reverse
+            | input list --fuzzy $'Please choose a (ansi magenta)command from history(ansi reset):'
+            | commandline edit -i $in"
+    }
+  }
 ]

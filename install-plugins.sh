@@ -1,7 +1,8 @@
 #!/usr/bin/env nu
 
+echo "Installing starship"
+cargo install starship
 echo "Set up starship config for nu"
-
 if not ('~/.cache/starship' | path exists ) { 
   mkdir ~/.cache/starship
   starship init nu | save -f ~/.cache/starship/init.nu
@@ -23,3 +24,6 @@ plugin add ~/.cargo/bin/nu_plugin_clipboard
 #
 echo "Installing pueue for background tasks"
 cargo install pueue
+
+echo "Installing just for executing scripts"
+cargo install just

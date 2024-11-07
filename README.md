@@ -25,11 +25,12 @@ source ~/.cache/starship/init.nu
 
 ## Other recommended items
 
-I use the following as well:
+I use the following as well (install-plugins also installs these):
 
-Use [pueue](https://github.com/Nukesor/pueue) to have background tasks (tasks below will also use it). Generally `cargo install pueue` and then `pueued -d`
-
-Using [starship](https://starship.rs/). Generally `cargo install starship`
+- Use [pueue](https://github.com/Nukesor/pueue) to have background tasks (tasks below will also use it).
+  Generally `cargo install pueue` and then `pueued -d`,
+- Using [starship](https://starship.rs/). Generally `cargo install starship`
+- Using [just](https://github.com/casey/just). Generally `cargo install just`
 
 From [nu_scripts](https://github.com/nushell/nu_scripts):
 
@@ -53,8 +54,4 @@ source $"($nu_scripts_path)/custom-completions/virsh/virsh-completions.nu"
 
 # backtround tasks: "task spawn"
 use $"($nu_scripts_path)/modules/background_task/task.nu"
-```
-
-```
-
 ```
