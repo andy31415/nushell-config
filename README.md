@@ -16,8 +16,9 @@ Edit using `config nu` and add something like:
 # see https://www.nushell.sh/book/how_nushell_code_gets_run.html#parse-time-evaluation
 const myconfig_path = ([$nu.home-path "devel" "nushell-config"] | path join)
 
-source $"($myconfig_path)/aliases.nu"
+# ORDER is important here ...
 source $"($myconfig_path)/helpers.nu"
+source $"($myconfig_path)/aliases.nu"
 source $"($myconfig_path)/keybindings.nu"
 
 source ~/.cache/starship/init.nu
