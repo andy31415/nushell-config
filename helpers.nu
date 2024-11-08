@@ -20,6 +20,6 @@ def sorted-ls [...x] {
 }
 
 # Run ripgrep but format it for nushell
-def nrg [term] {
-  rg --color=always -n $term  | lines | split column --number 3 ':' path line match | update line {ansi strip | into int} | insert dir {$in.path | path dirname} | sort-by dir path
+def nrg [term, ...paths] {
+  rg --color=always -n $term ...$paths | lines | split column --number 3 ':' path line match | update line {ansi strip | into int} | insert dir {$in.path | path dirname} | sort-by dir path
 }
