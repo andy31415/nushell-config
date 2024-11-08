@@ -21,5 +21,5 @@ def sorted-ls [...x] {
 
 # Run ripgrep but format it for nushell
 def nrg [term, ...paths] {
-  rg --color=always -n $term ...$paths | lines | split column --number 3 ':' path line match | update line {ansi strip | into int} | insert dir {$in.path | path dirname} | sort-by dir path
+  rg --color=always -n --glob '!third_party' --glob '!out' --glob '!.git' --hidden --no-ignore $term ...$paths | lines | split column --number 3 ':' path line match | update line {ansi strip | into int} | insert dir {$in.path | path dirname} | sort-by dir path
 }
