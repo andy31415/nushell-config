@@ -14,6 +14,12 @@ def smf [] {
   sk -m -c {fd -HI -E third_party -E out -E .git .} --preview {bat -f $in}
 }
 
-def sorted-ls [] {
-  ls | sort-by type name
+# Just an LS with sorting
+def sorted-ls [...x] {
+  ls $x | sort-by type name
+}
+
+# Run ripgrep but format it for nushell
+def nrg [term] {
+  rg --color=always -n $term  | lines | split column --number 3 ':' path line match | update line {ansi strip | into int} | insert dir {$in.path | path dirname} | sort-by dir path
 }
