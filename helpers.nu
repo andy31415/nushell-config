@@ -13,3 +13,7 @@ def sf [] {
 def smf [] {
   sk -m -c {fd -HI -E third_party -E out -E .git .} --preview {bat -f $in}
 }
+
+def sorted-ls [] {
+  ls | sort-by type name
+}
