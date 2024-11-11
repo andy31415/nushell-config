@@ -27,21 +27,44 @@ def nrg --wrapped [
     --no-ignore     # Ignore stadard CHIP dirs (third_party, out, .git)
     --no-hidden     # Do not enter hidden directories
     --add-dir       # Add directory to the output
+    --include-gen   # Included generated output greps (chip specific)
     ...more_args    # Arguments to pass to `rg` (i.e. ripgrep). Generally term and directory
 ] {
-  let extra_args = []
+  # Basically NEVER want to see these:
+  let extra_args = [
+     --glob '!\.git'
+     --glob '!\.mypy_cache'
+     --glob '!\.pytest_cache'
+     --glob '!\.ruff_cache'
+     --glob '!\.cache'
+     --glob '!\.ipynb_checkpoints'
+  ]
+
   let extra_args = if $no_ignore {
     $extra_args
   } else {
-    ($extra_args ++ --glob ++ '!third_party' ++ --glob ++ '!out' ++ --glob ++ '!.git')
+    ($extra_args ++ --glob ++ '!third_party' ++ --glob ++ '!out')
   }
   let extra_args = if $no_hidden { $extra_args } else { ($extra_args ++ --hidden) }
-  let $extra_args = $extra_args ++ $more_args
 
-  let results = rg --color=always -n --hidden --no-ignore ...$extra_args | lines | split column --number 3 ':' path line match | update line {ansi strip | into int}
+
+  let extra_args = if $include_gen {
+    $extra_args
+  } else {
+    ($extra_args
+       ++ --glob ++ '!zzz_generated'
+       ++ --glob ++ '!src/darwin/Framework/CHIP/zap-generated'
+       ++ --glob ++ '!src/controller/java/zap-generated'
+       ++ --glob ++ '!src/controller/python/chip/clusters'
+    )
+  }
+
+
+  # Got all RG default args, so run the command
+  let results = rg --color=always -n --hidden --no-ignore ...$extra_args ...$more_args | lines | split column --number 3 ':' path line match | update line {ansi strip | into int}
 
   let results = if $add_dir {
-    $results | insert dir {$in.path | path dirname} | sort-by dir path 
+    $results | insert dir {$in.path | path dirname} | sort-by dir path
   } else {
     $results | sort-by path
   }
