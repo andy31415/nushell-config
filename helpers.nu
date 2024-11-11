@@ -20,6 +20,31 @@ def sorted-ls [...x] {
 }
 
 # Run ripgrep but format it for nushell
-def nrg [term, ...paths] {
-  rg --color=always -n --glob '!third_party' --glob '!out' --glob '!.git' --hidden --no-ignore $term ...$paths | lines | split column --number 3 ':' path line match | update line {ansi strip | into int} | insert dir {$in.path | path dirname} | sort-by dir path
+#
+# This automatically ignores typical directories, however
+# you may want to add more arguments as needed
+def nrg --wrapped [
+    --no-ignore     # Ignore stadard CHIP dirs (third_party, out, .git)
+    --no-hidden     # Do not enter hidden directories
+    --add-dir       # Add directory to the output
+    ...more_args    # Arguments to pass to `rg` (i.e. ripgrep). Generally term and directory
+] {
+  let extra_args = []
+  let extra_args = if $no_ignore {
+    $extra_args
+  } else {
+    ($extra_args ++ --glob ++ '!third_party' ++ --glob ++ '!out' ++ --glob ++ '!.git')
+  }
+  let extra_args = if $no_hidden { $extra_args } else { ($extra_args ++ --hidden) }
+  let $extra_args = $extra_args ++ $more_args
+
+  let results = rg --color=always -n --hidden --no-ignore ...$extra_args | lines | split column --number 3 ':' path line match | update line {ansi strip | into int}
+
+  let results = if $add_dir {
+    $results | insert dir {$in.path | path dirname} | sort-by dir path 
+  } else {
+    $results | sort-by path
+  }
+
+  $results
 }
