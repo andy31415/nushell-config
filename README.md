@@ -32,7 +32,8 @@ I use the following as well (install-plugins also installs these):
   Generally `cargo install pueue` and then `pueued -d`,
 - Using [starship](https://starship.rs/). Generally `cargo install starship`
 - Using [just](https://github.com/casey/just). Generally `cargo install just`
-- using [carapace](https://github.com/carapace-sh/carapace/tree/master/example) for completions
+- using [carapace](https://github.com/carapace-sh/carapace/tree/master/example) for completions. Specifically
+  see [here](https://carapace-sh.github.io/carapace-bin/setup.html) for install logic.
 
 Should install [jc](https://kellyjonbrazil.github.io/jc/#installation) manually, like `apt-get install jc`.
 This way we can convert outputs of commands.
