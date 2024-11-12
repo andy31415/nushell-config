@@ -28,6 +28,7 @@ def nrg --wrapped [
     --no-hidden     # Do not enter hidden directories
     --add-dir       # Add directory to the output
     --include-gen   # Included generated output greps (chip specific)
+    --pipe          # when piping, we generally do not want coloring
     ...more_args    # Arguments to pass to `rg` (i.e. ripgrep). Generally term and directory
 ] {
   # Basically NEVER want to see these:
@@ -59,9 +60,15 @@ def nrg --wrapped [
     )
   }
 
+  let extra_args = if $pipe {
+     ($extra_args ++ --color ++ never)
+  } else {
+     ($extra_args ++ --color ++ always)
+  }
+
 
   # Got all RG default args, so run the command
-  let results = rg --color=always -n --hidden --no-ignore ...$extra_args ...$more_args | lines | split column --number 3 ':' path line match | update line {ansi strip | into int} | update path {ansi strip}
+  let results = rg -n --hidden --no-ignore ...$extra_args ...$more_args | lines | split column --number 3 ':' path line match | update line {ansi strip | into int} | update path {ansi strip}
 
   let results = if $add_dir {
     $results | insert dir {$in.path | path dirname} | sort-by dir path
