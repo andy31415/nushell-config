@@ -61,7 +61,7 @@ def nrg --wrapped [
 
 
   # Got all RG default args, so run the command
-  let results = rg --color=always -n --hidden --no-ignore ...$extra_args ...$more_args | lines | split column --number 3 ':' path line match | update line {ansi strip | into int}
+  let results = rg --color=always -n --hidden --no-ignore ...$extra_args ...$more_args | lines | split column --number 3 ':' path line match | update line {ansi strip | into int} | update path {ansi strip}
 
   let results = if $add_dir {
     $results | insert dir {$in.path | path dirname} | sort-by dir path
