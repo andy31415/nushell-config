@@ -48,26 +48,26 @@ def nrg --wrapped [
   let extra_args = if $no_ignore {
     $extra_args
   } else {
-    ($extra_args ++ --glob ++ '!third_party' ++ --glob ++ '!out')
+    [...$extra_args --glob '!third_party' --glob '!out']
   }
-  let extra_args = if $no_hidden { $extra_args } else { ($extra_args ++ --hidden) }
+  let extra_args = if $no_hidden { $extra_args } else { [...$extra_args --hidden] }
 
 
   let extra_args = if $include_gen {
     $extra_args
   } else {
-    ($extra_args
-       ++ --glob ++ '!zzz_generated'
-       ++ --glob ++ '!src/darwin/Framework/CHIP/zap-generated'
-       ++ --glob ++ '!src/controller/java/zap-generated'
-       ++ --glob ++ '!src/controller/python/chip/clusters'
-    )
+    [...$extra_args
+       --glob '!zzz_generated'
+       --glob '!src/darwin/Framework/CHIP/zap-generated'
+       --glob '!src/controller/java/zap-generated'
+       --glob '!src/controller/python/chip/clusters'
+    ]
   }
 
   let extra_args = if $pipe {
-     ($extra_args ++ --color ++ never)
+     [...$extra_args --color never]
   } else {
-     ($extra_args ++ --color ++ always)
+     [...$extra_args --color always]
   }
 
 

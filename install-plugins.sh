@@ -24,7 +24,9 @@ let plugins = [
 echo "installing some plugins"
 
 $plugins | each {
-  echo $"Installing ($in)" && cargo install $in && plugin add $in
+  echo $"Installing ($in)";
+  cargo install $in;
+  plugin add ([ "~/.cargo/bin/" $in ] | path join | path expand)
 } | ignore
 
 # NOT INSTALLED: not yet updated to latest nushell
