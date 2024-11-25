@@ -6,6 +6,10 @@ def sf [] {
   sk -c {fd -HI -E third_party -E out -E .git .} --preview {bat -f $in}
 }
 
+def gs [] {
+  (git status --porcelain | detect columns  --no-headers | rename status path)
+}
+
 # Select a specific file using sk, reasonably fast
 # Ignores third_party and out by default
 #

@@ -8,14 +8,24 @@ if not ('~/.cache/starship' | path exists ) {
   starship init nu | save -f ~/.cache/starship/init.nu
 }
 
+let plugins = [
+  # Official plugins
+  nu_plugin_inc
+  nu_plugin_polars
+  nu_plugin_gstat
+  nu_plugin_formats
+  nu_plugin_query
 
-echo "Installing SKIM plugin..."
-cargo install nu_plugin_skim
-plugin add ~/.cargo/bin/nu_plugin_skim
+  # Good ones
+  nu_plugin_skim
+  nu_plugin_clipboard
+]
 
-echo "Installing clipboard plugin"
-cargo install nu_plugin_clipboard
-plugin add ~/.cargo/bin/nu_plugin_clipboard
+echo "installing some plugins"
+
+$plugins | each {
+  echo $"Installing ($in)" && cargo install $in && plugin add $in
+} | ignore
 
 # NOT INSTALLED: not yet updated to latest nushell
 # echo "Installing compress plugin"
