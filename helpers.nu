@@ -33,10 +33,11 @@ def nrg --wrapped [
     --add-dir       # Add directory to the output
     --include-gen   # Included generated output greps (chip specific)
     --pipe          # when piping, we generally do not want coloring
+    --print-only    # print out what would be run
     ...more_args    # Arguments to pass to `rg` (i.e. ripgrep). Generally term and directory
 ] {
   # Basically NEVER want to see these:
-  let extra_args = [
+  mut extra_args = [
      --no-binary
      --glob '!\.cache'
      --glob '!\.environment'
@@ -45,28 +46,35 @@ def nrg --wrapped [
      --glob '!\.mypy_cache'
      --glob '!\.pytest_cache'
      --glob '!\.ruff_cache'
-  ] ++ (if $no_ignore {
-    []
-  } else {
-    [--glob '!third_party' --glob '!out']
-  }) ++ (if $no_hidden {
-    []
-  } else {
-    [--hidden]
-  }) ++ (if $include_gen {
-    []
-  } else {
-    [
+  ]
+
+  if not $no_ignore {
+    $extra_args ++= [--glob '!third_party' --glob '!out']
+  }
+
+  if not $no_hidden {
+    $extra_args ++= [--hidden]
+  }
+
+  if not $include_gen {
+    $extra_args ++= [
        --glob '!zzz_generated'
        --glob '!src/darwin/Framework/CHIP/zap-generated'
        --glob '!src/controller/java/zap-generated'
        --glob '!src/controller/python/chip/clusters'
     ]
-  }) ++ (if $pipe {
-     [--color never]
+  }
+
+  if $pipe {
+     $extra_args ++= [--color never]
   } else {
-     [--color always]
-  })
+     $extra_args ++= [--color always]
+  }
+
+  if $print_only {
+    ^echo rg -n --hidden --no-ignore ...$extra_args ...$more_args
+    return
+  }
 
   # Got all RG default args, so run the command
   let results = rg -n --hidden --no-ignore ...$extra_args ...$more_args | lines | split column --number 3 ':' path line match | update line {ansi strip | try {into int} catch {-1}} | update path {ansi strip}
