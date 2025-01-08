@@ -49,13 +49,13 @@ def pahole-quick [
 
   let output = pahole ...$extra_args $inputfile | complete | get stdout
   let filtered = $output | grep -E '^struct|^class|size:|sum members' | grep -B 2 'sum members' --no-group-separator
-  let joined = $filtered | awk '/(struct|class).* {/ { C = $0 } /size: / {S = $0} /sum members/ {print C,S,$0}'
+  let joined = $filtered | awk '/(?<type>struct|class).* {/ { C = $0 } /size: / {S = $0} /sum members/ {print C,S,$0}'
   let table = $joined | parse --regex '(struct|class) (?<name>[^ ]*).* size: (?<size>\d+).* sum members: (?<member_size>\d+).*'
 
   # fix types and add member size
   let table = $table | update size {|s| $s.size | into int} | update member_size {|s| $s.member_size | into int} | insert delta {|s| $s.size - $s.member_size}
 
-  $table | sort-by delta
+  $table | sort-by delta | uniq
 }
 
 # Run ripgrep but format it for nushell
