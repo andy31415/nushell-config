@@ -3,7 +3,7 @@
 #
 # Use to pipe to future commands like git lg or vim
 def sf [] {
-  sk -c {fd -HI -E third_party -E out -E .git .} --preview {bat -f $in}
+  sk -c {fd -HI -E third_party -E out -E .git -E .cache .} --preview {bat --theme "Monokai Extended"  -f $in}
 }
 
 def gs [] {
