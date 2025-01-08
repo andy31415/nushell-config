@@ -23,12 +23,31 @@ def sorted-ls [...x] {
   ls $x | sort-by type name
 }
 
+# PAHOLE wrapper with options for C++
+def ph [
+  --name: string = ''     # class name filter
+  --holes: int = 0        # mimimum number of holes
+  inputfile               # input file name
+] {
+  mut extra_args = [ --show_private_classes ]
+  if $holes > 0 { $extra_args ++= [ --holes $holes ] }
+  if $name != '' { $extra_args ++= [ --class_name $name ] }
+  pahole ...$extra_args $inputfile | complete | get stdout
+}
+
 # Run PAHOLE on a file and show potential savings (just filters things
 # that have size mand member sizes)
 def pahole-quick [
-  name # input file name
+  --name: string = ''     # class name filter
+  inputfile # input file name
 ] {
-  let output = pahole --show_private_classes $name | complete | get stdout
+  mut extra_args = [
+    --show_private_classes
+    --holes=1
+  ]
+  if $name != '' { $extra_args ++= [ --class_name $name ] }
+
+  let output = pahole ...$extra_args $inputfile | complete | get stdout
   let filtered = $output | grep -E '^struct|^class|size:|sum members' | grep -B 2 'sum members' --no-group-separator
   let joined = $filtered | awk '/(struct|class).* {/ { C = $0 } /size: / {S = $0} /sum members/ {print C,S,$0}'
   let table = $joined | parse --regex '(struct|class) (?<name>[^ ]*).* size: (?<size>\d+).* sum members: (?<member_size>\d+).*'
