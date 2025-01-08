@@ -23,6 +23,22 @@ def sorted-ls [...x] {
   ls $x | sort-by type name
 }
 
+# Run PAHOLE on a file and show potential savings (just filters things
+# that have size mand member sizes)
+def pahole-quick [
+  name # input file name
+] {
+  let output = pahole --show_private_classes $name | complete | get stdout
+  let filtered = $output | grep -E '^struct|^class|size:|sum members' | grep -B 2 'sum members' --no-group-separator
+  let joined = $filtered | awk '/(struct|class).* {/ { C = $0 } /size: / {S = $0} /sum members/ {print C,S,$0}'
+  let table = $joined | parse --regex '(struct|class) (?<name>[^ ]*).* size: (?<size>\d+).* sum members: (?<member_size>\d+).*'
+
+  # fix types and add member size
+  let table = $table | update size {|s| $s.size | into int} | update member_size {|s| $s.member_size | into int} | insert delta {|s| $s.size - $s.member_size}
+
+  $table | sort-by delta
+}
+
 # Run ripgrep but format it for nushell
 #
 # This automatically ignores typical directories, however
