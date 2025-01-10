@@ -6,6 +6,16 @@ def sf [] {
   sk -c {fd -HI -E third_party -E out -E .git -E .cache .} --preview {bat --theme "Monokai Extended"  -f $in}
 }
 
+# List the remote names from `git-branch -la`
+# - Ordered by commit date
+# - contains a nice explorable table (and filterable)
+def git-remotes [] {
+  let cols = ^git branch -la --sort=-committerdate --format='%(HEAD) %(refname)' 
+  let cols = $cols | parse --regex '(?<HEAD> |\*) refs/(?<fullname>heads/(?<head_name>.*)|remotes/(?<remote>[^/]*)/(?<remote_name>.*))'
+  let cols = $cols | update HEAD { $in == '*'} | rename current | insert name {$"($in.head_name)($in.remote_name)"} 
+  $cols | reject fullname remote_name head_name
+}
+
 def gs [] {
   (git status --porcelain | detect columns  --no-headers | rename status path)
 }
