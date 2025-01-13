@@ -1,12 +1,14 @@
 #!/usr/bin/env nu
 
-echo "Installing starship"
-cargo install starship
-echo "Set up starship config for nu"
-if not ('~/.cache/starship' | path exists ) { 
-  mkdir ~/.cache/starship
-  starship init nu | save -f ~/.cache/starship/init.nu
-}
+# TODO: temporary removed, have different settings for now
+#
+# echo "Installing starship"
+# cargo install starship
+# echo "Set up starship config for nu"
+# if not ('~/.cache/starship' | path exists ) { 
+#   mkdir ~/.cache/starship
+#   starship init nu | save -f ~/.cache/starship/init.nu
+# }
 
 let plugins = [
   # Official plugins
