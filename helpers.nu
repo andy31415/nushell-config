@@ -6,6 +6,23 @@ def sf [] {
   sk -c {fd -HI -E third_party -E out -E .git -E .cache .} --preview {bat --theme "Monokai Extended"  -f $in}
 }
 
+# Binary size difference between two paths
+def bb [
+  --no-total # skip total line
+  input # the input file
+  base # the baseline file
+] {
+   let $data = ~/devel/chip-scripts/bindiff.py $input $base --name-truncate 1000 | lines;
+
+   let $data = $data | if $no_total {
+     parse --regex '(?<type>[A-Z]*) +(?<bytes>-?\d+) +(?<function>.*)$'
+   } else {
+     parse --regex '(?<type>[A-Z]*) +(?<bytes>-?\d+) *(?<function>.*)?$'
+   }
+
+   $data | update bytes { $in | into int }
+}
+
 # List the remote names from `git-branch -la`
 # - Ordered by commit date
 # - contains a nice explorable table (and filterable)
