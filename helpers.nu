@@ -17,6 +17,17 @@ def docker-images [] {
    $images | each {$in | from json} | update created {$in | into datetime} | update size {$in | into filesize}
 }
 
+#
+# List and parse all podman images
+# with nice parsing/formatting for creation and filezise
+#
+# Ideas taken from nu_scripts:
+#   https://github.com/nushell/nu_scripts/blob/main/modules/docker/mod.nu
+def podman-images [] {
+   let $images = podman images --format '{"id":"{{.ID}}", "repo": "{{.Repository}}", "tag":"{{.Tag}}", "size":"{{.Size}}" "created":"{{.CreatedAt}}"}' | lines 
+   $images | each {$in | from json} | update created {$in | into datetime} | update size {$in | into filesize}
+}
+
 # Binary size difference between two paths
 def bb [
   --no-total # skip total line
