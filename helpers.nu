@@ -6,6 +6,17 @@ def sf [] {
   sk -c {fd -HI -E third_party -E out -E .git -E .cache .} --preview {bat --theme "Monokai Extended"  -f $in}
 }
 
+#
+# List and parse all docker images
+# with nice parsing/formatting for creation and filezise
+#
+# Ideas taken from nu_scripts:
+#   https://github.com/nushell/nu_scripts/blob/main/modules/docker/mod.nu
+def docker-images [] {
+   let $images = docker images --format '{"id":"{{.ID}}", "repo": "{{.Repository}}", "tag":"{{.Tag}}", "size":"{{.Size}}" "created":"{{.CreatedAt}}"}' | lines 
+   $images | each {$in | from json} | update created {$in | into datetime} | update size {$in | into filesize}
+}
+
 def gs [] {
   (git status --porcelain | detect columns  --no-headers | rename status path)
 }
