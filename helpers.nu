@@ -17,6 +17,33 @@ def docker-images [] {
    $images | each {$in | from json} | update created {$in | into datetime} | update size {$in | into filesize}
 }
 
+# Binary size difference between two paths
+def bb [
+  --no-total # skip total line
+  input # the input file
+  base # the baseline file
+] {
+   let $data = ~/devel/chip-scripts/bindiff.py $input $base --name-truncate 1000 | lines;
+
+   let $data = $data | if $no_total {
+     parse --regex '(?<type>[A-Z]*) +(?<bytes>-?\d+) +(?<function>.*)$'
+   } else {
+     parse --regex '(?<type>[A-Z]*) +(?<bytes>-?\d+) *(?<function>.*)?$'
+   }
+
+   $data | update bytes { $in | into int }
+}
+
+# List the remote names from `git-branch -la`
+# - Ordered by commit date
+# - contains a nice explorable table (and filterable)
+def git-remotes [] {
+  let cols = ^git branch -la --sort=-committerdate --format='%(HEAD) %(refname)' 
+  let cols = $cols | parse --regex '(?<HEAD> |\*) refs/(?<fullname>heads/(?<head_name>.*)|remotes/(?<remote>[^/]*)/(?<remote_name>.*))'
+  let cols = $cols | update HEAD { $in == '*'} | rename current | insert name {$"($in.head_name)($in.remote_name)"} 
+  $cols | reject fullname remote_name head_name
+}
+
 def gs [] {
   (git status --porcelain | detect columns  --no-headers | rename status path)
 }
