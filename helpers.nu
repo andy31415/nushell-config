@@ -29,16 +29,12 @@ def podman-images [] {
 }
 
 # Binary size difference between two paths
-def bb [
-  --no-total # skip total line
+def bb --wrapped [
   input: path # the input file
   base: path # the baseline file
+  ...args
 ] {
-  if $no_total {
-     ~/devel/chip-scripts/bindiff.py --output csv --skip-total $input $base
-  } else {
-     ~/devel/chip-scripts/bindiff.py --output csv $input $base
-  } | from csv
+  ~/devel/chip-scripts/bindiff.py --output csv ...$args $input $base | from csv
 }
 
 # List the remote names from `git-branch -la`
