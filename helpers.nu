@@ -34,15 +34,11 @@ def bb [
   input: path # the input file
   base: path # the baseline file
 ] {
-   let $data = ~/devel/chip-scripts/bindiff.py $input $base --name-truncate 1000 | lines;
-
-   let $data = $data | if $no_total {
-     parse --regex '(?<type>[A-Z]*) +(?<bytes>-?\d+) +(?<function>.*)$'
-   } else {
-     parse --regex '(?<type>[A-Z]*) +(?<bytes>-?\d+) *(?<function>.*)?$'
-   }
-
-   $data | update bytes { $in | into int }
+  if $no_total {
+     ~/devel/chip-scripts/bindiff.py --output csv --skip-total $input $base
+  } else {
+     ~/devel/chip-scripts/bindiff.py --output csv $input $base
+  } | from csv
 }
 
 # List the remote names from `git-branch -la`
