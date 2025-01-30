@@ -31,8 +31,8 @@ def podman-images [] {
 # Binary size difference between two paths
 def bb [
   --no-total # skip total line
-  input # the input file
-  base # the baseline file
+  input: path # the input file
+  base: path # the baseline file
 ] {
    let $data = ~/devel/chip-scripts/bindiff.py $input $base --name-truncate 1000 | lines;
 
