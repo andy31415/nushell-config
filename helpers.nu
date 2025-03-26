@@ -4,7 +4,14 @@
 # Use to pipe to future commands like git lg or vim
 def sf [] {
   # sk -c {fd -HI -E third_party -E out -E .git -E .cache .} --preview {bat --theme "Monokai Extended"  -f $in}
-  fd -HI -E third_party -E out -E .git -E .cache . | lines | sk --preview { let $filename = $in; head -n 200 $filename o+e>| | bat --theme "Monokai Extended" --force-colorization --file-name $filename }
+  fd -HI -E third_party -E out -E .git -E .cache . | lines | sk --preview { 
+    let $filename = $in; 
+    if ($filename | path type) == 'dir' {
+      ls $filename
+    } else {
+      head -n 200 $filename o+e>| | bat --theme "Monokai Extended" --force-colorization --file-name $filename 
+    }
+  }
 }
 
 #
