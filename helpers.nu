@@ -3,8 +3,9 @@
 #
 # Use to pipe to future commands like git lg or vim
 def sf [] {
-  # sk -c {fd -HI -E third_party -E out -E .git -E .cache .} --preview {bat --theme "Monokai Extended"  -f $in}
-  fd -HI -E third_party -E out -E .git -E .cache . | lines | sk --preview { 
+  fd -HI -E third_party -E out -E .git -E .cache . | lines | sk --cmd { |query|
+    fd -HI -E third_party -E out -E .git -E .cache $query | lines
+  } --preview {
     let $filename = $in; 
     if ($filename | path type) == 'dir' {
       ls $filename
