@@ -34,7 +34,8 @@ def bb --wrapped [
   base: path # the baseline file
   ...args
 ] {
-  ~/devel/chip-scripts/bindiff.py --output csv ...$args $input $base | from csv
+  # ~/devel/chip-scripts/bindiff.py --output csv ...$args $input $base | from csv
+  ~/devel/connectedhomeip/scripts/tools/binary_elf_size_diff.py --output csv ...$args $input $base | from csv
 }
 
 # List the remote names from `git-branch -la`
