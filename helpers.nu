@@ -57,6 +57,10 @@ def git-remotes [] {
   $cols | reject fullname remote_name head_name
 }
 
+def git-commits-per-week [] {
+  git log --pretty=format:'%cd' --date="format:%Y-%W" | parse '{year}-{week}' | uniq -c | flatten | sort-by year week
+}
+
 def gs [] {
   (git status --porcelain | detect columns  --no-headers | rename status path)
 }
