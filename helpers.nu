@@ -25,7 +25,7 @@ def build-and-save [
     host_build?: bool  # use host builds (i.e. not podman)
 ] {
   let $branch = ^git branch --show-current;
-  let $copy_dir_name = [ "./out/branch-builds/" $branch "/" $target ] | str join
+  let $copy_dir_name = [ "./out/branch-builds/" $branch ] | str join
 
   mkdir $copy_dir_name;
 
