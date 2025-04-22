@@ -22,14 +22,15 @@ def sf [] {
 # Pass in the ELF binary to copy over
 def build-and-save [
     target: string,       # the ELF binary file name.
-    host_build?: bool  # use host builds (i.e. not podman)
+    host_build?: bool ,   # use host builds (i.e. not podman)
+    tag?: string,         # custom tag for the build (instead of branch name)
 ] {
-  let $branch = ^git branch --show-current;
-  let $copy_dir_name = [ "./out/branch-builds/" $branch ] | str join
+  let $tag = if ($tag == null) { ^git branch --show-current } else { $tag }
+  let $copy_dir_name = [ "./out/branch-builds/" $tag ] | str join
 
   mkdir $copy_dir_name;
 
-  $"Branch:           ($branch)" | print
+  $"Tag:              ($tag)" | print
   $"Building target:  ($target)" | print
   $"Copying dir:      ($copy_dir_name)" | print
 
