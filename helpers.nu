@@ -15,6 +15,38 @@ def sf [] {
   }
 }
 
+# Save a copy of a build target based on the current branch.
+#
+# Assumes build_examples.py `HOST:` build and standard naming/paths.
+#
+# Pass in the ELF binary to copy over
+def build-and-save [
+    target: string,       # the ELF binary file name.
+    host_build?: bool  # use host builds (i.e. not podman)
+] {
+  let $branch = ^git branch --show-current;
+  let $copy_dir_name = [ "./out/branch-builds/" $branch "/" $target ] | str join
+
+  mkdir $copy_dir_name;
+
+  $"Branch:           ($branch)" | print
+  $"Building target:  ($target)" | print
+  $"Copying dir:      ($copy_dir_name)" | print
+
+  let command = ["source ./scripts/activate.sh >/dev/null && ./scripts/build/build_examples.py --log-level info --target '" $target "' build --copy-artifacts-to " $copy_dir_name ] | str join
+  let host_build = if ($host_build == null) { $target =~ '^linux-x64-' } else { $host_build }
+
+  if $host_build {
+    "Building on HOST..." | print
+    bash -c $command
+  } else {
+    "Building via PODMAN..." | print
+    podman exec -w /workspace bld_vscode /bin/bash -c $command
+  }
+
+  $"Artifacts in: ($copy_dir_name)" | print
+}
+
 #
 # List and parse all docker images
 # with nice parsing/formatting for creation and filezise
