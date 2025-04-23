@@ -25,7 +25,10 @@ def build-and-save [
     host_build?: bool ,   # use host builds (i.e. not podman)
     tag?: string,         # custom tag for the build (instead of branch name)
 ] {
-  let $tag = if ($tag == null) { ^git branch --show-current } else { $tag }
+  let tag = match $tag {
+    null => (^git branch --show-current)
+    _ => $tag,
+  }
   let $copy_dir_name = [ "./out/branch-builds/" $tag ] | str join
 
   mkdir $copy_dir_name;
@@ -35,7 +38,11 @@ def build-and-save [
   $"Copying dir:      ($copy_dir_name)" | print
 
   let command = ["source ./scripts/activate.sh >/dev/null && ./scripts/build/build_examples.py --log-level info --target '" $target "' build --copy-artifacts-to " $copy_dir_name ] | str join
-  let host_build = if ($host_build == null) { $target =~ '^linux-x64-' } else { $host_build }
+
+  let host_build = match $host_build {
+    null => ($target =~ '^linux-x64-')
+    _ => $host_build
+  }
 
   if $host_build {
     "Building on HOST..." | print
