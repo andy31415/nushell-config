@@ -21,7 +21,7 @@ def sf [] {
 #
 # Pass in the ELF binary to copy over
 def build-and-save [
-    target: string,       # the ELF binary file name.
+    target: string,      # the ELF binary file name.
     --tag (-t): string,  # custom tag for the build (instead of branch name)
 ] {
   let tag = match $tag {
