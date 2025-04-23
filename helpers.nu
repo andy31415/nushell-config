@@ -22,8 +22,7 @@ def sf [] {
 # Pass in the ELF binary to copy over
 def build-and-save [
     target: string,       # the ELF binary file name.
-    host_build?: bool ,   # use host builds (i.e. not podman)
-    tag?: string,         # custom tag for the build (instead of branch name)
+    --tag (-t): string,  # custom tag for the build (instead of branch name)
 ] {
   let tag = match $tag {
     null => (^git branch --show-current)
@@ -38,11 +37,7 @@ def build-and-save [
   $"Copying dir:      ($copy_dir_name)" | print
 
   let command = ["source ./scripts/activate.sh >/dev/null && ./scripts/build/build_examples.py --log-level info --target '" $target "' build --copy-artifacts-to " $copy_dir_name ] | str join
-
-  let host_build = match $host_build {
-    null => ($target =~ '^linux-x64-')
-    _ => $host_build
-  }
+  let host_build = ($target =~ '^linux-x64-')
 
   if $host_build {
     "Building on HOST..." | print
