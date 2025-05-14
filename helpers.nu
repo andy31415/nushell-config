@@ -76,20 +76,21 @@ def "bb-complete path" [] {
   fd . out/branch-builds/ --type file |
     lines |
     parse 'out/branch-builds/{branch}/{path}' |
-    get path | uniq #| input list 'What path?'
+    get path | uniq
 }
 
 def "bb-complete branch" [] {
   fd . out/branch-builds/ --type file |
     lines |
     parse 'out/branch-builds/{branch}/{path}' |
-    get branch | uniq #| input list 'What branch?'
+    get branch | uniq
 }
 
+# Executes bb with the given "out/branch-builds/<branch>/<path>" arguments
 def branch-bb --wrapped [
-  path: string@"bb-complete path",
-  base_branch: string@"bb-complete branch"
-  test_branch: string@"bb-complete branch"
+  path: string@"bb-complete path"          # Sub-path that we compare (must be the same on both branches)
+  base_branch: string@"bb-complete branch" # baseline branch (e.g. master)
+  test_branch: string@"bb-complete branch" # branch to compare against baseline
   ...args
 ] {
   bb (["out/branch-builds/" $test_branch "/" $path] | str join) (["out/branch-builds/" $base_branch "/" $path] | str join) ...$args
