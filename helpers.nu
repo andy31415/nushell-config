@@ -6,11 +6,11 @@ def sf [] {
   fd -HI -E third_party -E out -E .git -E .cache . | lines | sk --cmd { |query|
     fd -HI -E third_party -E out -E .git -E .cache $query | lines
   } --preview {
-    let $filename = $in; 
+    let $filename = $in;
     if ($filename | path type) == 'dir' {
       ls $filename
     } else {
-      head -n 200 $filename o+e>| | bat --theme "Monokai Extended" --force-colorization --file-name $filename 
+      head -n 200 $filename o+e>| | bat --theme "Monokai Extended" --force-colorization --file-name $filename
     }
   }
 }
@@ -70,6 +70,29 @@ def docker-images [] {
 def podman-images [] {
    let $images = podman images --format '{"id":"{{.ID}}", "repo": "{{.Repository}}", "tag":"{{.Tag}}", "size":"{{.Size}}" "created":"{{.CreatedAt}}"}' | lines 
    $images | each {$in | from json} | update created {$in | into datetime} | update size {$in | into filesize}
+}
+
+def "bb-complete path" [] {
+  fd . out/branch-builds/ --type file |
+    lines |
+    parse 'out/branch-builds/{branch}/{path}' |
+    get path | uniq #| input list 'What path?'
+}
+
+def "bb-complete branch" [] {
+  fd . out/branch-builds/ --type file |
+    lines |
+    parse 'out/branch-builds/{branch}/{path}' |
+    get branch | uniq #| input list 'What branch?'
+}
+
+def branch-bb --wrapped [
+  path: string@"bb-complete path",
+  base_branch: string@"bb-complete branch"
+  test_branch: string@"bb-complete branch"
+  ...args
+] {
+  bb (["out/branch-builds/" $test_branch "/" $path] | str join) (["out/branch-builds/" $base_branch "/" $path] | str join) ...$args
 }
 
 # Binary size difference between two paths
