@@ -58,7 +58,7 @@ def build-and-save [
 #   https://github.com/nushell/nu_scripts/blob/main/modules/docker/mod.nu
 def docker-images [] {
    let $images = docker images --format '{"id":"{{.ID}}", "repo": "{{.Repository}}", "tag":"{{.Tag}}", "size":"{{.Size}}" "created":"{{.CreatedAt}}"}' | lines 
-   $images | each {$in | from json} | update created {$in | str replace ' EDT' '' | into datetime} | update size {$in | into filesize}
+   $images | each {$in | from json} | update size {$in | into filesize}
 }
 
 #
