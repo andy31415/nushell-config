@@ -57,8 +57,8 @@ def build-and-save [
 # Ideas taken from nu_scripts:
 #   https://github.com/nushell/nu_scripts/blob/main/modules/docker/mod.nu
 def docker-images [] {
-   let $images = docker images --format '{"id":"{{.ID}}", "repo": "{{.Repository}}", "tag":"{{.Tag}}", "size":"{{.Size}}" "created":"{{.CreatedAt}}"}' | lines 
-   $images | each {$in | from json} | update size {$in | into filesize}
+   let $images = docker images --format '{"id":"{{.ID}}", "repo": "{{.Repository}}", "tag":"{{.Tag}}", "size":"{{.Size}}" "created":"{{.CreatedAt}}"}' | lines
+   $images | each {$in | from json} | update created {$in | str replace -r ' (EDT|EST)' '' | into datetime} | update size {$in | into filesize}
 }
 
 #
@@ -68,8 +68,8 @@ def docker-images [] {
 # Ideas taken from nu_scripts:
 #   https://github.com/nushell/nu_scripts/blob/main/modules/docker/mod.nu
 def podman-images [] {
-   let $images = podman images --format '{"id":"{{.ID}}", "repo": "{{.Repository}}", "tag":"{{.Tag}}", "size":"{{.Size}}" "created":"{{.CreatedAt}}"}' | lines 
-   $images | each {$in | from json} | update created {$in | into datetime} | update size {$in | into filesize}
+   let $images = podman images --format '{"id":"{{.ID}}", "repo": "{{.Repository}}", "tag":"{{.Tag}}", "size":"{{.Size}}" "created":"{{.CreatedAt}}"}' | lines
+   $images | each {$in | from json} | update created {$in | str replace -r ' (EDT|EST)' '' | into datetime} | update size {$in | into filesize}
 }
 
 def "bb-complete path" [] {
