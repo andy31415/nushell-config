@@ -267,7 +267,7 @@ do --env {
 do --env {
   let gemini_api_key_path = $"($nu.home-path)/.gemini/api_key.txt"
   try {
-     $env.GEMINI_API_KEY = (open $gemini_api_key_path)
+     $env.GEMINI_API_KEY = (open $gemini_api_key_path | str trim)
   } catch { |err|
      echo $"Error: ($gemini_api_key_path) set failure: ($err.msg). You do not have a gemini key."
   }
