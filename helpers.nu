@@ -262,3 +262,13 @@ do --env {
     load-env $ssh_agent_env
     $ssh_agent_env | save --force $ssh_agent_file
 }
+
+# I want to have a gemini API key
+do --env {
+  let gemini_api_key_path = $"($nu.home-path)/.gemini/api_key.txt"
+  try {
+     $env.GEMINI_API_KEY = (open gemini_api_key_path | trim)
+  } catch {
+     echo $"Error: ($gemini_api_key_path) not found. You do not have a gemini key."
+  }
+}
