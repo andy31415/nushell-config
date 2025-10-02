@@ -26,7 +26,7 @@ def build-and-save [
 ] {
   let tag = match $tag {
     null => (if ('.jj' | path exists) {
-      (^jj bookmark list -r 'coalesce(bookmarks() & ::@)' | ^head  -n 1 | ^sd ':.*$' '')
+      (^jj bookmark list -r 'coalesce(bookmarks() & ::@)' --sort committer-date- | ^head  -n 1 | ^sd ':.*$' '')
     } else {
       (^git branch --show-current | sd '/' '_')
     })
