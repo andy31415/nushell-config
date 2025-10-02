@@ -25,7 +25,11 @@ def build-and-save [
     --tag (-t): string,  # custom tag for the build (instead of branch name)
 ] {
   let tag = match $tag {
-    null => (^git branch --show-current | sd '/' '_')
+    null => (if ('.jj' | path exists) {
+      (^jj bookmark list -r 'coalesce(bookmarks() & ::@)' | ^head  -n 1 | ^sd ':.*$' '')
+    } else {
+      (^git branch --show-current | sd '/' '_')
+    })
     _ => $tag,
   }
   let $copy_dir_name = [ "./out/branch-builds/" $tag ] | str join
