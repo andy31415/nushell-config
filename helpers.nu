@@ -194,7 +194,8 @@ def nrg --wrapped [
      --no-binary
      --glob '!\.cache'
      --glob '!\.environment'
-     --glob '!\.git'
+     --glob '!\.git/**'
+     --glob '!\.jj/**'
      --glob '!\.ipynb_checkpoints'
      --glob '!\.mypy_cache'
      --glob '!\.pytest_cache'
@@ -202,7 +203,7 @@ def nrg --wrapped [
   ]
 
   if not $no_ignore {
-    $extra_args ++= [--glob '!third_party' --glob '!out']
+    $extra_args ++= [--glob '!third_party/**' --glob '!out/**']
   }
 
   if not $no_hidden {
@@ -211,10 +212,10 @@ def nrg --wrapped [
 
   if not $include_gen {
     $extra_args ++= [
-       --glob '!zzz_generated'
-       --glob '!src/darwin/Framework/CHIP/zap-generated'
-       --glob '!src/controller/java/zap-generated'
-       --glob '!src/controller/python/chip/clusters'
+       --glob '!zzz_generated/**'
+       --glob '!src/darwin/Framework/CHIP/zap-generated/**'
+       --glob '!src/controller/java/zap-generated/**'
+       --glob '!src/controller/python/chip/clusters/**'
     ]
   }
 
