@@ -245,8 +245,10 @@ def nrg --wrapped [
 # Ensure ssh-agent is available
 do --env {
     let ssh_agent_file = (
-        $nu.temp-path | path join $"ssh-agent-($env.USER? | default 'andrei').nuon"
+       $nu.temp-path | path join $"ssh-agent-($env.USER? | default 'andrei').nuon"
     )
+
+    echo $"SSH AGENT FILE: ($ssh_agent_file)"
 
     if ($ssh_agent_file | path exists) {
         let ssh_agent_env = open ($ssh_agent_file)
@@ -266,14 +268,19 @@ do --env {
         | into record
     load-env $ssh_agent_env
     $ssh_agent_env | save --force $ssh_agent_file
+
+    let expected_path = $"($env.HOME)/.cache/agent-tty"
+    rm -f $expected_path
+    ln -s $ssh_agent_env.SSH_AUTH_SOCK $expected_path
 }
 
+# TODO: below I disable gemini because i want `--gfg`
 # I want to have a gemini API key
-do --env {
-  let gemini_api_key_path = $"($nu.home-path)/.gemini/api_key.txt"
-  try {
-     $env.GEMINI_API_KEY = (open $gemini_api_key_path | str trim)
-  } catch { |err|
-     echo $"Error: ($gemini_api_key_path) set failure: ($err.msg). You do not have a gemini key."
-  }
-}
+# do --env {
+#   let gemini_api_key_path = $"($nu.home-path)/.gemini/api_key.txt"
+#   try {
+#      $env.GEMINI_API_KEY = (open $gemini_api_key_path | str trim)
+#   } catch { |err|
+#      echo $"Error: ($gemini_api_key_path) set failure: ($err.msg). You do not have a gemini key."
+#   }
+# }
