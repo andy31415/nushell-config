@@ -1,7 +1,7 @@
 # Build fd -E exclusion args from hardcoded list + global gitignore (~/.config/git/ignore)
 def fd-excludes [] {
   let hardcoded = [third_party out .git .cache .jj .ruff_cache .pytest_cache __pycache__ .ipynb_checkpoints/]
-  let gitignore_path = ($nu.home-dir | path join ".config/git/ignore")
+  let gitignore_path = (try { $nu.home-dir } catch { $nu.home-path } | path join ".config/git/ignore")
   let from_gitignore = if ($gitignore_path | path exists) {
     open $gitignore_path
       | lines
@@ -104,40 +104,6 @@ def podman-images [] {
    $images | each {$in | from json} | update created {$in | str replace -r ' (EDT|EST)' '' | into datetime} | update size {$in | into filesize}
 }
 
-def "bb-complete path" [] {
-  fd . out/branch-builds/ --type file |
-    lines |
-    parse 'out/branch-builds/{branch}/{path}' |
-    get path | uniq
-}
-
-def "bb-complete branch" [] {
-  fd . out/branch-builds/ --type file |
-    lines |
-    parse 'out/branch-builds/{branch}/{path}' |
-    get branch | uniq
-}
-
-# Executes bb with the given "out/branch-builds/<branch>/<path>" arguments
-def branch-bb --wrapped [
-  path: string@"bb-complete path"          # Sub-path that we compare (must be the same on both branches)
-  base_branch: string@"bb-complete branch" # baseline branch (e.g. master)
-  test_branch: string@"bb-complete branch" # branch to compare against baseline
-  ...args
-] {
-  bb (["out/branch-builds/" $test_branch "/" $path] | str join) (["out/branch-builds/" $base_branch "/" $path] | str join) ...$args
-}
-
-# Binary size difference between two paths
-def bb --wrapped [
-  input: path # the input file
-  base: path # the baseline file
-  ...args
-] {
-  # ~/devel/chip-scripts/bindiff.py --output csv ...$args $input $base | from csv
-  ~/devel/connectedhomeip/scripts/tools/binary_elf_size_diff.py --output csv ...$args $input $base | from csv
-}
-
 # List the remote names from `git-branch -la`
 # - Ordered by commit date
 # - contains a nice explorable table (and filterable)
@@ -161,7 +127,7 @@ def gs [] {
 #
 # Use to pipe to future commands that accept multiple files as arguments
 def smf [] {
-  sk -m -c {fd -HI -E third_party -E out -E .git .} --preview {bat -f $in}
+  ^sk -m -c {fd -HI -E third_party -E out -E .git .} --preview {bat -f $in}
 }
 
 # Just an LS with sorting
@@ -273,7 +239,7 @@ def nrg --wrapped [
 # Ensure ssh-agent is available
 do --env {
     let ssh_agent_file = (
-        $nu.temp-dir | path join $"ssh-agent-($env.USER? | default 'andrei').nuon"
+        try { $nu.temp-dir } catch { $nu.temp-path } | path join $"ssh-agent-($env.USER? | default 'andrei').nuon"
     )
 
     echo $"SSH AGENT FILE: ($ssh_agent_file)"
@@ -306,7 +272,7 @@ do --env {
 #       how to decide?
 # I want to have a gemini API key
 do --env {
-   let gemini_api_key_path = $"($nu.home-dir)/.gemini/api_key.txt"
+   let gemini_api_key_path = $"(try { $nu.home-dir } catch { $nu.home-path })/.gemini/api_key.txt"
    if ($gemini_api_key_path | path exists) {
       $env.GEMINI_API_KEY = (open $gemini_api_key_path | str trim)
    }
